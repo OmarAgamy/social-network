@@ -1,0 +1,256 @@
+﻿@using Social_Media.Models
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WorkWise Html Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="~/Content/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/jquery.mCustomScrollbar.min.css">
+
+</head>
+
+
+<body onload="requests()">
+
+
+    <div class="wrapper">
+
+
+
+        <header>
+            <div class="container">
+                <div class="header-data">
+                    <div class="logo">
+                        <a href="index.html" title=""><img src="~/Content/images/logo.png" alt=""></a>
+                    </div><!--logo end-->
+                    <div class="search-bar">
+                        @using (Html.BeginForm("all", "Search", FormMethod.Get))
+                        {
+                            <input type="text" name="search" placeholder="Search...">
+                            <button type="submit"> <i class="la la-search"></i> </button>
+                        }
+                    </div><!--search-bar end-->
+                    <nav>
+                        <ul>
+                            <li>
+                                <a href="~/Home/Index" title="">
+                                    <span><img src="~/Content/images/icon1.png" alt=""></span>
+                                    Home
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="~/Profile/ProfileTemp" title="">
+                                    <span><img src="~/Content/images/icon4.png" alt=""></span>
+                                    MyProfile
+                                </a>
+
+                            </li>
+
+                            <li>
+                                <!-- TO Messenger -->
+                                <a href="~/Messages/Index" title="" class="not-box-open">
+                                    <span><img src="~/Content/images/icon6.png" alt=""></span>
+                                    Messages
+                                </a>
+
+                            </li>
+                            <li onmouseover="checked()" style="position:relative;z-index:2">
+                                <a href="#" title="">
+
+                                    <span> <i class="fa fa-user-plus" id="req-icon"></i></span>
+                                    <span style="position:absolute; right:0.2px;top:1px ;margin-right:23px; margin-top:8px;visibility:hidden" id="req-num">2</span>
+                                    Requests
+                                </a>
+                                <ul style="height:280px;width:328px;background-color:white;color:black;overflow:hidden; overflow-y:scroll;" id="req-list">
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </nav><!--nav end-->
+                    <div class="menu-btn">
+                        <a href="#" title=""><i class="fa fa-bars"></i></a>
+                    </div><!--menu-btn end-->
+                    <div class="user-account">
+                        <div class="user-info">
+                            <ul>
+                                <li>
+                                    @Html.ActionLink("" + Session["Username"], null, null, null, null)
+                                </li>
+                            </ul>
+                            <i class="la la-sort-down"></i>
+                        </div>
+                        <div class="user-account-settingss">
+                            <h3>Online Status</h3>
+                            <ul class="on-off-status">
+                                <li>
+                                    <div class="fgt-sec">
+                                        <input type="radio" name="cc" id="c5">
+                                        <label for="c5">
+                                            <span></span>
+                                        </label>
+                                        <small>Online</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="fgt-sec">
+                                        <input type="radio" name="cc" id="c6">
+                                        <label for="c6">
+                                            <span></span>
+                                        </label>
+                                        <small>Offline</small>
+                                    </div>
+                                </li>
+                            </ul>
+                            <h3>Custom Status</h3>
+                            <div class="search_form">
+                                <form>
+                                    <input type="text" name="search">
+                                    <button type="submit">Ok</button>
+                                </form>
+                            </div><!--search_form end-->
+                            <h3>Setting</h3>
+                            <ul class="us-links">
+                                <li><a href="profile-account-setting.html" title="">Account Setting</a></li>
+                                <li><a href="#" title="">Privacy</a></li>
+                                <li><a href="#" title="">Faqs</a></li>
+                                <li><a href="#" title="">Terms & Conditions</a></li>
+                            </ul>
+                            <h3 class="tc"><a href="@Url.Action("logout","Account")">Logout</a></h3>
+                        </div><!--user-account-settingss end-->
+                    </div>
+                </div><!--header-data end-->
+            </div>
+        </header><!--header end-->
+
+    </div>
+    <script>
+        var page = '@ViewBag.Title';
+        function deny() {
+            var element = document.getElementById(event.target.getAttribute('data-arg1'));
+            var Userid = event.target.getAttribute('data-arg1');
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                    },
+                    success: function () {
+                        element.parentNode.removeChild(element);
+                          if (page == "all" || page == "MyProfile") {
+                            window.location.reload(true);
+                        }
+                    }
+                });
+            } catch (err) { }
+        }
+        function accept() {
+            var element = document.getElementById(event.target.getAttribute('data-arg1'));
+            var Userid = event.target.getAttribute('data-arg1');
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/AcceptFriendRequest" + '?friendID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                    },
+                    success: function () {
+                        element.parentNode.removeChild(element);
+                        if (page == "all" || page == "MyProfile" || page == "Messenger" || page =="PostIndex" ) {
+                            window.location.reload(true);
+                        }
+                    }
+                });
+            } catch (err) { }
+        }
+        function requests() {
+            var list = document.getElementById("req-list").getElementsByTagName("li");
+            var listlen = list.length
+            var icon = document.getElementById("req-icon");
+            document.getElementById("req-list").innerHTML = "";
+             try {
+                var single = false;
+                 var name;
+                 var id;
+                 var pic;
+            $.ajax({
+                type: "GET",
+                url: "/Search/friendrequests" ,
+                error: function () {
+                    alert("Something Went Wrong !! ");
+                },
+                dataType: 'json',
+                data: {},
+                success: function (data) {
+                    var counter = 0;
+                    $.each(data, function (item) {
+                        if (item == "name") {
+                            single = true
+                            name = data["name"];
+                            id = data["id"];
+                            pic = data["img"]
+                        }
+                        if (!single) {
+                            var row = data[item];
+                            var img = document.createElement("img");
+                            img.style = "width:35px;height:35px"
+                        if(row["img"] != null)
+                             var string = "/UploadedFiles/" + row["img"];
+                         else
+                             var string = "http://via.placeholder.com/35x35"
+                            img.src = string;
+                            $("#req-list").append('<li id=' + row["id"] + '><div class="suggestion-usd">' + img.outerHTML + '<div class="sgt-text"><h4>' + row["name"] + '</h4><span>' + row["id"] + '</span></div><span><i onclick="deny()" data-arg1=' + row["id"] + ' data-arg2=' + counter + ' class="la la-close"></i></span><span><button style="margin-left:4px" onclick="accept()" data-arg1=' + row["id"] + ' data-arg2=' + counter + ' class="accept-req">Accept</button></span></div></li>');
+                        }
+                        counter++;
+                    });
+
+                    if (single) {
+
+                        var img = document.createElement("img");
+                        img.style = "width:35px;height:35px"
+                        if(pic != null)
+                             var string = "/UploadedFiles/" + pic;
+                         else
+                             var string = "http://via.placeholder.com/35x35"
+                        img.src = string;
+                        $("#req-list").append('<li id=' + id + '><div class="suggestion-usd">' + img.outerHTML + '<div class="sgt-text"><h4>' + name + '</h4><span>' + id + '</span></div><span><i onclick="deny()" data-arg1=' + id + ' data-arg2=' + counter + ' class="la la-close"></i></span><span><button style="margin-left:4px" onclick="accept()" data-arg1=' + id+ ' data-arg2=' + counter + ' class="accept-req">Accept</button></span></div></li>');
+                    }
+                   /* if (counter > listlen) {
+                        icon.style = "color:deepskyblue"
+                        alert(counter)
+                        alert(listlen)
+                    }*/
+
+                }
+
+            });
+        } catch (err) { }
+        }
+        function checked() {
+            var icon = document.getElementById("req-icon");
+            icon.style = ""
+        }
+    </script>
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/popper.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/flatpickr.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/slick/slick.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/script.js"></script>
+</body>
+</html>

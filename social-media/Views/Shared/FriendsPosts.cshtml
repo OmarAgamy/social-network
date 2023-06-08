@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Social_Media.Models.Post>
+
+
+
+
+    <section id="deletePosts" class="forum-page">
+        @foreach (var post in Model)
+        {
+            <div class="posts-section">
+                <div class="post-bar">
+                    <div class="post_topbar">
+                        <div class="usy-dt">
+                            <img src="http://via.placeholder.com/50x50" alt="">
+                            <div class="usy-name">
+                                <h3>@post.User.Username</h3>
+                                <span><img src="/Content/images/clock.png" alt="">@post.DateTime</span>
+                            </div>
+                        </div>
+                        <div class="ed-opts">
+                            <a href="#" title="" class="ed-opts-open"><i class="la la-ellipsis-v"></i></a>
+                            <ul class="ed-options">
+                                <li><a onclick="AddEditPost(@post.ID)" href="#" title="">Edit Post</a></li>
+                                <li><a data-customer-id="@post.ID" class="js-delete" href="#" title="">Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="job_descp">
+
+
+                        <p>@post.Body</p>
+                    </div>
+                    <div class="job-status-bar">
+                        <ul class="like-com">
+                            <img src="/Content/images/liked-img.png" alt="">
+                            <li>@Html.DisplayFor(modelItem => post.like_post)<i class="la la-heart"></i>like <br /></li>
+                            <li>@Html.ActionLink("Like", "like", "Post", new { id = @post.ID }, null)</li>
+                        </ul>
+                        <div class="comment-st">
+                            <ul>
+                                <li><a class="com" href="#" title="" onclick="NewComment()"> <img src="images/com.png" alt=""> Comment </a> </li>
+
+                            </ul>
+                        </div><!--post-st end-->
+
+                    </div>
+                </div><!--post-bar end-->
+
+            </div>
+        }
+    </section>

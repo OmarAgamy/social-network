@@ -1,0 +1,169 @@
+﻿@model Social_Media.Models.User
+@{
+    ViewBag.Title = "registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WorkWise Html Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="~/Content/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/jquery.mCustomScrollbar.min.css">
+</head>
+
+
+<body class="sign-in">
+
+
+    <div class="wrapper">
+
+
+
+
+
+        <div class="sign-in-page">
+            <div class="signin-popup">
+                <div class="signin-pop">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="cmp-info">
+                                <div class="cm-logo">
+                                    <img src="images/cm-logo.png" alt="">
+                                    <p>Workwise,  is a global freelancing platform and social networking where businesses and independent professionals connect and collaborate remotely</p>
+                                </div><!--cm-logo end-->
+                                <img src="images/cm-main-img.png" alt="">
+                                <div>
+                                    <h3 class="tc"><a href="@Url.Action("login","Account")">Sign in</a></h3>
+
+                                </div>
+                            </div><!--cmp-info end-->
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="login-sec">
+                                <ul class="sign-control">
+                                    <li data-tab="tab-1" class="current"><a href="" title="">Sign up</a></li>
+                                </ul>
+                                <div class="sign_in_sec current" id="tab-1">
+
+                                    <h3>Sign up</h3>
+
+                                    @using (Html.BeginForm("registration", "Account", FormMethod.Post))
+                                    {
+                                        <div class="dff-tab current" id="tab-3">
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="sn-field">
+                                                            <input type="text" name="Username" placeholder="username">
+                                                            <i class="la la-user"></i>
+                                                        </div>
+                                                        <div>
+                                                            @Html.ValidationMessageFor(modle => Model.Username)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="sn-field">
+                                                            <input type="text" name="Email" placeholder="Email">
+                                                            <i class="la la-globe"></i>
+                                                        </div>
+                                                        <div>
+                                                            @Html.ValidationMessageFor(modle => Model.Email)
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="sn-field">
+                                                            <input type="password" name="Password" placeholder="Password">
+                                                            <i class="la la-lock"></i>
+                                                        </div>
+                                                        <div>
+                                                            @Html.ValidationMessageFor(modle => Model.Password)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="sn-field">
+                                                            <input type="password" name="ConfirmPassword" placeholder="ConfirmPassword">
+                                                            <i class="la la-lock"></i>
+                                                        </div>
+                                                        <div>
+                                                            @Html.ValidationMessageFor(modle => Model.ConfirmPassword)
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="sn-field">
+                                                            <input type="Date" name="Birthdate" placeholder="Birth-Date">
+                                                            <i class="la la-birthday-cake"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <div class="checky-sec st2">
+                                                            <div class="fgt-sec">
+                                                                <input type="checkbox" name="cc" id="c2">
+                                                                <label for="c2">
+                                                                    <span></span>
+                                                                </label>
+                                                                <small>Yes, I understand and agree to the workwise Terms & Conditions.</small>
+                                                            </div><!--fgt-sec end-->
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <button type="submit" value="submit">Submit</button>
+                                                    </div>
+
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <label class="label-success ">@ViewBag.DuplicateMessage</label>
+                                                    </div>
+
+                                                    <div class="col-lg-12 no-pdd">
+                                                        <label class="label-danger">@ViewBag.SuccessMessage</label>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div><!--dff-tab end-->
+                                    }
+
+
+                                </div><!--sign_in_sec end-->
+
+                            </div><!--login-sec end-->
+                        </div>
+                    </div>
+                </div><!--signin-pop end-->
+            </div><!--signin-popup end-->
+
+        </div><!--sign-in-page end-->
+
+
+    </div><!--theme-layout end-->
+
+
+
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/popper.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/slick/slick.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/script.js"></script>
+</body>
+</html>
+
+
+

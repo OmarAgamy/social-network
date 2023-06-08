@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Social_Media.Models.Comment>
+
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WorkWise Html Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/responsive.css">
+
+
+</head>
+<body>
+    <section id="deleteComments" class="forum-page">
+        @foreach (var comment in Model)
+        {
+            <div class="posts-section">
+
+                <div class="job_descp">
+
+
+                    <p>@comment.Content</p>
+                </div>
+                <div class="ed-opts">
+                    <a href="#" title="" class="ed-opts-open"><i class="la la-ellipsis-v"></i></a>
+                    <ul class="ed-options">
+
+                        <li><a data-comment-id="@comment.CommentID" class="js-delete" href="#" title="">Delete</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        }
+    </section>
+
+    <div class="comment-st">
+        <ul>
+            <li><a class="" href="#" title="" onclick="NewComment()"> Comment </a> </li>
+        </ul>
+
+    </div><!--post-st end-->
+
+    <div class="modal fade" id="ShowComment">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>New Comment</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="comment">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                                <input class="form-control" type="text" name="Content" id="content" placeholder="Your Comment ..." />
+                            </div>
+                        </div>
+
+
+
+                    </form>
+                    <div class="form-group">
+                        <button class="btn btn-info form-control" type="submit" onclick="SaveComment()"><i class="glyphicon glyphicon-registration-mark"></i> Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+<script>
+    function NewComment() {
+        $("#ShowComment").modal();
+
+    }
+    function SaveComment() {
+        var Content = $("#content").val();
+
+        if (Content == "") {
+
+            return false;
+        }
+        var data = $("#comment").serialize();
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/Comment/AddComment",
+            success: function (result) {
+
+
+                // $("#comment")[0].reset();
+
+                window.location.reload(true);
+
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#deleteComments .js-delete").click(function () {
+            var button = $(this);
+            bootbox.confirm("Are You Sure To Delete", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "/Comment/Delete/" + button.attr("data-comment-id"),
+                        method: "POST",
+                        success: function () {
+
+                            $("#deleteComments").remove();
+                            window.location.reload(true);
+
+                        }
+                    });
+
+                }
+            });
+        });
+    });
+</script>

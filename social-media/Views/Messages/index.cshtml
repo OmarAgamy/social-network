@@ -1,0 +1,250 @@
+﻿
+@model Social_Media.ViewModel.MessengerModel
+@{
+    ViewBag.Title = "Messenger";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@RenderPage("~/Views/Shared/_header.cshtml")
+
+<div class="wrapper">
+    <section class="messages-page">
+        <div class="container">
+            <div class="messages-sec">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 no-pdd">
+                        <div class="msgs-list">
+                            @{ if (Model.Users != null)
+                                {
+                                    <div class="msg-title">
+
+                                        <h3>Messages</h3>
+                                        <ul>
+                                            <li><a href="#" title=""><i class="fa fa-cog"></i></a></li>
+                                            <li><a href="#" title=""><i class="fa fa-ellipsis-v"></i></a></li>
+                                        </ul>
+
+
+                                    </div><!--msg-title end-->
+                                }
+                            }
+                            <div class="messages-list" style="overflow:hidden;overflow-y:scroll;max-height:640px">
+                                <ul>
+                                    @{ int i = 0;}
+                                    @{
+                                        if (Model.Users != null)
+                                        {
+                                            foreach (var user in Model.Users)
+                                            {
+                                                if (i == 0)
+                                                {
+                                                    <li class="user active" onclick="toggle(event,@user.UserID)" id=@user.UserID>
+                                                        <div class="usr-msg-details">
+                                                            <div class="usr-ms-img">
+                                                                <img src="~/UploadedFiles/@Html.DisplayFor(m => user.Pic)" alt="" style="width:50px;height:50px">
+                                                                
+                                                            </div>
+                                                            <div class="usr-mg-info" style="margin-top:15px">
+                                                                <h3>@user.Username</h3>
+                                                            </div><!--usr-mg-info end-->
+                                                            <span class="posted_time">1:55 PM</span>
+                                                            
+                                                        </div><!--usr-msg-details end-->
+                                                    </li>
+                                                    i++;
+                                                }
+                                                else
+                                                {
+                                                    <li class="user" onclick="toggle(event,@user.UserID)" id=@user.UserID>
+                                                        <div class="usr-msg-details">
+                                                            <div class="usr-ms-img">
+                                                                <img src="~/UploadedFiles/@Html.DisplayFor(m => user.Pic)" alt="" style="width:50px;height:50px">
+                                                               
+                                                            </div>
+                                                            <div class="usr-mg-info" style="margin-top:15px">
+                                                                <h3>@user.Username</h3>
+                                                            </div><!--usr-mg-info end-->
+                                                            <span class="posted_time">1:55 PM</span>
+                                                           
+                                                        </div><!--usr-msg-details end-->
+                                                    </li>
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+                                </ul>
+                            </div><!--messages-list end-->
+                        </div><!--msgs-list end-->
+                    </div>
+                    @{
+                        if (Model.Users != null)
+                        {
+                            <div class="col-lg-8 col-md-12 pd-right-none pd-left-none">
+                                                    <div class="main-conversation-box">
+                                                        <div class="message-bar-head">
+                                                            <div class="usr-msg-details">
+                                                                <div class="usr-ms-img">
+                                                                    <img id="picof" src="" alt="" style="width:50px;height:50px">
+                                                                </div>
+                                                                <div class="usr-mg-info">
+
+                                                                    <h3 id="nameof"> Welcome To Messenger </h3>
+
+                                                                </div><!--usr-mg-info end-->
+                                                            </div>
+                                                            <a href="#" title=""><i class="fa fa-ellipsis-v"></i></a>
+                                                        </div><!--message-bar-head end-->
+                                                        <div class="messages-line" style="overflow:hidden;overflow-y:scroll" id="body">
+                                                            <div style="margin-bottom:105px"></div>
+
+
+
+                                                        </div><!--messages-line end-->
+                                                        <!-- Send message -->
+                                                        <div class="message-send-area">
+                                                            <form id="msgform">
+                                                                <div class="mf-field">
+                                                                    <input id="msg" type="text" name="message" placeholder="Type a message here">
+                                                                    <button type="submit" onclick="send()" data-arg1=@Model.LoggedUser.Pic>Send</button>
+                                                                </div>
+                                                                <ul>
+                                                                    <li><a href="#" title=""><i class="fa fa-smile-o"></i></a></li>
+                                                                    <li><a href="#" title=""><i class="fa fa-camera"></i></a></li>
+                                                                    <li><a href="#" title=""><i class="fa fa-paperclip"></i></a></li>
+                                                                </ul>
+                                                            </form>
+                                                        </div>
+                                                        <!-- Send message End -->
+                                                    </div><!--main-conversation-box end-->
+                            </div>
+                        }
+                        else
+                        {
+                            <h1 style="color:darkgray; margin-top:20%; margin-left:25%; font-size:72px"> You Have No Frirnds !! </h1>
+                        }
+                    }
+                </div>
+            </div><!--messages-sec end-->
+        </div>
+    </section><!--messages-page end-->
+
+</div><!--theme-layout end-->
+<script>
+    function toggle(evt, id) {
+        var i, tablinks;
+        var body = document.getElementById("body");
+        tablinks = document.getElementsByClassName("user");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        evt.currentTarget.className += " active";
+        body.innerHTML = "";
+        try {
+            var single = false;
+            var Content;
+            var Seen;
+            var SenderID;
+            var ReceiverID;
+            var Time;
+            var ReceiverPic;
+            var SenderPic;
+            $.ajax({
+                type: "GET",
+                url: "/Messages/chatdata" + '?friendID=' + id,
+                error: function () {
+                    alert("Something Went Wrong !! ");
+                },
+                dataType: 'json',
+                data: {},
+                success: function (data) {
+                    $("#body").append('<div style="margin-bottom:105px"></div>');
+                    $.each(data, function (item) {
+
+                        if (item == "Content") {
+                            single = true
+                            Content = data["Content"];
+                            Seen = data["Seen"];
+                            SenderID = data["SenderID"];
+                            ReceiverID = data["ReceiverID"];
+                            Time = data["Time"];
+                            ReceiverPic = data["ReceiverPic"];
+                            SenderPic = data["SenderPic"];
+                        }
+                        if (!single) {
+
+                            var row = data[item];
+                            var img = document.createElement("img");
+                            img.style = "width:50px;height:50px"
+                            if (row["ReceiverID"] == @Model.LoggedUser.UserID) {
+                                var string = "/UploadedFiles/" + row["SenderPic"];
+                                img.src = string;
+                                $("#body").append('<div class="main-message-box st3"><div class="message-dt st3"><div class="message-inner-dt"><p>' + row["Content"] + '</p></div><span>' + row["Time"] + '</span></div><div class="messg-usr-img">' + img.outerHTML + '</div></div>');
+                            }
+                            else {
+                                var string = "/UploadedFiles/" + row["SenderPic"];
+                                img.src = string;
+                                $("#body").append('<div class="main-message-box ta-right"><div class="message-dt" style="overflow:hidden;float:right"><div class="message-inner-dt" style="margin-bottom:8px"><p>' + row["Content"] + '</p></div><span>' + row["Time"] + '</span></div><div class="messg-usr-img">' + img.outerHTML + '</div></div>');
+                            }
+                        }
+                    });
+
+                    if (single) {
+
+                        var img = document.createElement("img");
+                        img.style = "width:50px;height:50px"
+                        if (ReceiverID == @Model.LoggedUser.UserID) {
+
+                            var string = "/UploadedFiles/" + SenderPic;
+                            img.src = string;
+                            $("#body").append('<div class="main-message-box st3"><div class="message-dt st3"><div class="message-inner-dt"><p>' + Content + '</p></div><span>' + Time + '</span></div><div class="messg-usr-img">' + img.outerHTML + '</div></div>');
+
+                        }
+                        else {
+                            var string = "/UploadedFiles/" + SenderPic;
+                            img.src = string;
+                            $("#body").append('<div class="main-message-box ta-right"><div class="message-dt" style="overflow:hidden;float:right" ><div class="message-inner-dt" style="margin-bottom:8px"><p>' + Content + '</p></div><span>' + Time + '</span></div><div class="messg-usr-img">' + img.outerHTML + '</div></div>');
+
+                        }
+                    }
+                }
+
+            });
+        } catch (err) { }
+
+    }
+    $("#msgform").submit(function (e) {
+        return false;
+    });
+    function send() {
+        var i, tablinks, friendID;
+        tablinks = document.getElementsByClassName("user");
+        for (i = 0; i < tablinks.length; i++) {
+            if (tablinks[i].classList.contains("active")) {
+                friendID = tablinks[i].id
+
+            }
+        }
+        var loginpic = event.target.getAttribute('data-arg1');
+        var msg = document.getElementById("msg");
+        if (msg.value != "") {
+            $.ajax({
+                type: "GET",
+                url: "/Messages/SendMessage" + '?Content=' + msg.value + '&' + "friendID=" + friendID,
+                error: function () {
+                    alert("Something Went Wrong !! ");
+                },
+
+                success: function (msgtime) {
+                    var img = document.createElement("img");
+                    img.style = "width:50px;height:50px"
+                    var string = "/UploadedFiles/" + loginpic;
+                    img.src = string;
+                    $("#body").append('<div class="main-message-box ta-right"><div class="message-dt" style="overflow:hidden;float:right"><div class="message-inner-dt" style="margin-bottom:8px"><p>' + msg.value + '</p></div><span>' + msgtime + '</span></div><div class="messg-usr-img">' + img.outerHTML + '</div></div>');
+                    msg.value = "";
+                }
+
+            });
+        }
+    }
+</script>

@@ -1,0 +1,75 @@
+﻿
+@model IEnumerable<Social_Media.Models.User>
+@using Social_Media.Controllers;
+@using Social_Media.Models;
+@{
+    ViewBag.Title = "AddMembers";
+    var ID = @Url.RequestContext.RouteData.Values["id"];
+}
+
+@RenderPage("~/Views/Shared/_header.cshtml")
+
+
+@{int buttonid = 0;}
+@foreach (var item in Model)
+{
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="company_profile_info">
+            <div class="company-up-info" style="border-left: 3px solid #4d4dff;">
+                <img src="http://via.placeholder.com/90x90" alt="">
+                <h3>@item.Username</h3>
+                <ul>
+
+                    <li><a onclick="Add()" href="#" title="" class="follow" id=@buttonid data-arg1=@buttonid data-arg2=@item.UserID data-arg3=@ID style="background-color: #53d690">Add to group</a></li>
+
+                </ul>
+
+            </div>
+            <a href="~/Profile/Visit?id=@item.UserID" title="" class="view-more-pro">View Profile</a>
+        </div><!--company_profile_info end-->
+    </div>
+    buttonid++;
+}
+
+<a href="https://localhost:44343/Group/Group/@ID">Go to your group</a>
+<script>
+    function Add() {
+        var x = document.getElementById(event.target.getAttribute('data-arg1'));
+        var Userid = event.target.getAttribute('data-arg2');
+        var groupid = event.target.getAttribute('data-arg3');
+        if (x.innerHTML === "Add to group") {
+            x.innerHTML = "Remove from group";
+            x.style.backgroundColor = "red";
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Group/AddMember/" + groupid + '?groupid=' + groupid + '&MemberID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                        x.innerHTML = "Add to group"
+                        x.style.backgroundColor = "#53d690";
+                    },
+                });
+            } catch (err) { }
+        } else {
+            if (x.innerHTML === "Remove from group") {
+                x.innerHTML = "Add to group"
+                x.style.backgroundColor = "#53d690";
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Group/RemoveMember/" + groupid + '?groupid=' + groupid + '&MemberID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                            x.innerHTML = "Remove from group";
+                            x.style.backgroundColor = "red";
+                        },
+                    });
+                } catch (err) { }
+            }
+        }
+
+    }
+
+</script>
+}

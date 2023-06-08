@@ -1,0 +1,263 @@
+﻿@using Social_Media.Models
+@model Social_Media.ViewModel.ProfileModel
+@{
+    ViewBag.Title = "MyProfile";
+}
+@RenderPage("~/Views/Shared/_header.cshtml")
+
+<script>
+    $("document").ready(function () {
+
+        $("#uploadphoto").change(function () {
+            $('#btnsubmit').click();
+        });
+    });
+    function change() {
+        document.getElementById('uploadphoto').click();
+    }
+</script>
+<script>
+    $("document").ready(function () {
+
+        $("#uploadcover").change(function () {
+            $('#btnsubmit2').click();
+        });
+    });
+    function changeCover() {
+        document.getElementById('uploadcover').click();
+    }
+</script>
+@using (Html.BeginForm("UploadCover", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <section class="cover-sec">
+        @if (Model.LoggedUser.Cover == null)
+        {
+            <img src="http://via.placeholder.com/1600x400" alt="">
+        }
+        else
+        {
+            <img src="~/UploadedFiles/@Html.DisplayFor(model=>model.LoggedUser.Cover)" alt="" style="width:1600px;height:400px">
+        }
+        <form id="form2" name="form2" action="">
+            <button type="submit" style="display:none" id="btnsubmit2"></button>
+            <input type="file" style="display:none" name="file" id="uploadcover" />
+            <a onclick="changeCover()" href="#" id="upload_link">Change Image<i class="fa fa-camera"></i></a>
+        </form>
+    </section>
+}
+<main>
+    <div class="main-section">
+        <div class="container">
+            <div class="main-section-data">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="main-left-sidebar">
+                            <div class="user_profile">
+                                @using (Html.BeginForm("UploadPic", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    <div class="user-pro-img">
+                                        @if (Model.LoggedUser.Pic == null)
+                                        {
+                                            <img src="http://via.placeholder.com/170x170" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/UploadedFiles/@Html.DisplayFor(model=>model.LoggedUser.Pic)" alt="" style="width:170px;height:170px">
+                                        }
+                                        <form id="form1" name="form1" action="">
+                                            <button type="submit" style="display:none" id="btnsubmit"></button>
+                                            <input type="file" style="display:none" name="file" id="uploadphoto" />
+                                            <a onclick="change()" href="#" id="upload_link"><i class="fa fa-camera"></i></a>
+                                        </form>
+                                    </div><!--user-pro-img end-->
+                                }
+                                <div class="user_pro_status">
+                                    <ul class="flw-status">
+                                        <li>
+                                            <span>Following</span>
+                                            <b>34</b>
+                                        </li>
+                                        <li>
+                                            <span>Followers</span>
+                                            <b>155</b>
+                                        </li>
+                                    </ul>
+
+                                </div><!--user_pro_status end-->
+                                @using (Html.BeginForm("MoveToEditProfile", "Profile", FormMethod.Post))
+                                {
+                                    <button type="submit" class="accept-req" style="display:inline-block">EditProfile</button>
+                                }
+
+                            </div><!--user_profile end-->
+
+                        </div><!--main-left-sidebar end-->
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="main-ws-sec">
+                            <div class="user-tab-sec">
+                                <h3>@Model.LoggedUser.Username</h3>
+                                <h4>@Model.LoggedUser.Bio</h4>
+                                <div class="tab-feed st2">
+                                    <ul>
+                                        <li data-tab="feed-dd" class="active">
+                                            <a href="#" title="">
+                                                <img src="~/Content/images/ic1.png" alt="">
+                                                <span>Posts</span>
+                                            </a>
+                                        </li>
+                                        <li data-tab="info-dd">
+                                            <a href="#" title="">
+                                                <img src="~/Content/images/ic2.png" alt="">
+                                                <span>Details</span>
+                                            </a>
+                                        </li>
+                                        <li data-tab="portfolio-dd">
+                                            <a href="#" title="">
+                                                <img src="~/Content/images/ic3.png" alt="">
+                                                <span>Friends</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div><!-- tab-feed end-->
+                            </div><!--user-tab-sec end-->
+                            <div class="product-feed-tab current" id="feed-dd">
+                                <div class="posts-section">
+                                    <div class="post-st">
+                                        <ul>
+                                            <li><a class="post-jb active" href="#" title="" onclick="NewPost()"> Create Post </a> </li>
+
+                                        </ul>
+                                    </div><!--post-st end-->
+                                    <div class="modal fade" id="ShowModal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                                                    <h4>New Post</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="post">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                                                                <input class="form-control" type="text" name="Body" id="body" placeholder="What's in your mind ... ?" />
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </form>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-info form-control" type="submit" onclick="SaveForm()"><i class="glyphicon glyphicon-registration-mark"></i> Post</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="post-bar">
+                                        @{
+                                            Html.RenderPartial("~/Views/Shared/Index.cshtml", Model.Posts);
+                                        }
+
+                                    </div><!--post-bar end-->
+                                    <div class="process-comm">
+                                        <div class="spinner">
+                                            <div class="bounce1"></div>
+                                            <div class="bounce2"></div>
+                                            <div class="bounce3"></div>
+                                        </div>
+                                    </div><!--process-comm end-->
+                                </div><!--posts-section end-->
+                            </div><!--product-feed-tab end-->
+                            <div class="product-feed-tab" id="info-dd">
+                                <div class="user-profile-ov">
+                                    <h3>Education<i class="fa fa-graduation-cap"></i></h3>
+                                    <p>@Model.LoggedUser.Education</p>
+                                </div><!--user-profile-ov end-->
+                                <div class="user-profile-ov st2">
+                                    <h3>Location<i class="fa fa-map-marker" aria-hidden="true"></i></h3>
+                                    <p>@Model.LoggedUser.Location</p>
+                                </div><!--user-profile-ov end-->
+                                <div class="user-profile-ov">
+                                    <h3>Birthdate<i class="fa fa-birthday-cake" aria-hidden="true"></i></h3>
+                                    <p>@Model.LoggedUser.Birthdate.ToShortDateString()</p>
+                                </div><!--user-profile-ov end-->
+                            </div><!--product-feed-tab end-->
+                            <div class="product-feed-tab" id="portfolio-dd">
+
+                                <div class="acc-setting">
+                                    <h3>My Friends</h3>
+                                    @{int buttonid = 1;
+                                        int listId = -1;}
+                                    @foreach (var item in Model.Friends)
+                                    {
+
+                                        <div class="col-lg-3 col-md-4 col-sm-6" style="width:50%" id=@listId>
+                                            <div class="company_profile_info">
+                                                <div class="company-up-info" style="border-left: 3px solid #4d4dff;">
+                                                    <img src="http://via.placeholder.com/90x90" alt="">
+                                                    <h3>@item.Username</h3>
+                                                    <h4>@item.UserID</h4>
+                                                    <ul>
+                                                        <li><button onclick="remove()" title="" type="button" class="btn btn-danger" id=@buttonid data-arg1=@listId data-arg2=@item.UserID style="background-color:red;margin-left:8px">Remove</button></li>
+                                                        <li><button onclick="Block()" title="" type="button" class="btn btn-primary" id=@buttonid data-arg1=@listId data-arg2=@item.UserID style="background-color:deepskyblue;margin-left:8px">Block</button></li>
+                                                    </ul>
+
+                                                </div>
+                                                <a href="~/Profile/Visit?id=@item.UserID" title="" class="view-more-pro">View Profile</a>
+                                            </div><!--company_profile_info end-->
+                                        </div>
+                                        ++buttonid;
+                                        listId = -1 * buttonid;
+                                    }
+                                </div><!--gallery_pf end-->
+                            </div><!--portfolio-gallery-sec end-->
+                        </div><!--product-feed-tab end-->
+                    </div><!--main-ws-sec end-->
+                </div>
+            </div>
+        </div><!-- main-section-data end-->
+    </div>
+</main>
+<script>
+    function remove() {
+        var element = document.getElementById(event.target.getAttribute('data-arg1'));
+        var Userid = event.target.getAttribute('data-arg2');
+        try {
+            $.ajax({
+                type: "GET",
+                url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                error: function () {
+                    alert("Something Went Wrong !! ");
+                },
+                success: function () {
+                    element.parentNode.removeChild(element);
+
+                }
+            });
+        } catch (err) { }
+    }
+    function Block() {
+        var element = document.getElementById(event.target.getAttribute('data-arg1'));
+        var Userid = event.target.getAttribute('data-arg2');
+        try {
+            $.ajax({
+                type: "GET",
+                url: "/Profile/Block" + '?friendID=' + Userid,
+                error: function () {
+                    alert("Something Went Wrong !! ");
+                },
+                success: function () {
+                    element.parentNode.removeChild(element);
+
+                }
+            });
+        } catch (err) { }
+
+    }
+    function NewPost() {
+        $("#ShowModal").modal();
+
+    }
+</script>

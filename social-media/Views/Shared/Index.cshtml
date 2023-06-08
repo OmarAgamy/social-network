@@ -1,0 +1,256 @@
+﻿@model IEnumerable<Social_Media.ViewModel.CommentsModel>
+@using Social_Media.Models
+
+@{
+    ViewBag.Title = "PostIndex";
+    MyDbcontext db = new MyDbcontext();
+    var username = Session["Username"];
+    User user = new User();
+    user = db.Users.Where(u => u.Username == username).FirstOrDefault();
+}
+
+<!DOCTYPE html>
+<html>
+
+<body>
+
+
+
+    <div class="wrapper">
+
+
+
+
+
+
+
+        <section id="deletePosts" class="forum-page">
+            @foreach (var post in Model)
+            {
+                <div class="posts-section">
+                    <div class="post-bar">
+                        <div class="post_topbar">
+                            <div class="usy-dt">
+                                @if (post.post.User.Pic == null)
+                                {
+                                    <img src="http://via.placeholder.com/50x50" alt="">
+                                }
+                                else
+                                {
+                                    <img src="~/UploadedFiles/@Html.DisplayFor(model=>post.post.User.Pic)" alt="" style="width:50px;height:50px">
+                                }
+                                <div class="usy-name">
+                                    <h3>@post.post.User.Username </h3>
+                                    <span><img src="/Content/images/clock.png" alt="">@post.post.DateTime</span>
+                                </div>
+                            </div>
+                            @if(post.post.UserID==user.UserID)
+                            {
+                                <div class="ed-opts">
+                                    <a href="#" title="" class="ed-opts-open"><i class="la la-ellipsis-v"></i></a>
+                                    <ul class="ed-options">
+                                        <li><a onclick="AddEditPost(@post.post.ID)" href="#" title="">Edit Post</a></li>
+                                        <li><a data-customer-id="@post.post.ID" class="js-delete" href="#" title="">Delete</a></li>
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                        <div class="job_descp">
+
+
+                            <p>@post.post.Body</p>
+                        </div>
+                        <div class="job-status-bar">
+                            <ul class="like-com">
+                                <img src="/Content/images/liked-img.png" alt="">
+                                <li>@Html.DisplayFor(modelItem => post.post.like_post)<i class="la la-heart"></i>like <br /></li>
+                                <li>@Html.ActionLink("Like", "like", "Post", new { id = @post.post.ID }, null)</li>
+                            </ul>
+                            <div class="comment-st">
+                                <ul>
+                                    <li><a class="com" href="#" title="" data-arg1="@post.post.ID" onclick="NewComment()"> <img src="images/com.png" alt=""> Comment </a> </li>
+
+                                </ul>
+                                <table class="table table-striped">
+                                    @foreach (var com in post.Comments)
+                                    {
+                                        <tr style="color:#FA8072 ; border: 2px solid #F5B041  ;border-radius: 20px; ">
+                                            <td>
+                                                <h3>@com.Content</h3>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+
+                            </div><!--post-st end-->
+                        </div>
+                    </div><!--post-bar end-->
+
+                </div>
+            }
+        </section>
+
+    </div>
+
+    <div class="modal fade" id="myModal1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">AddEdit Post</h3>
+                </div>
+                <div class="modal-body" id="myModalBodyDiv1">
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <button style="display : none" id="omaragamy"></button>
+    <div class="modal fade" id="ShowComment">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>New Comment</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="comment">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                                <input class="form-control" type="text" name="Content" id="content" placeholder="Your Comment ..." />
+                            </div>
+                        </div>
+
+
+
+                    </form>
+                    <div class="form-group">
+
+                        <button class="btn btn-info form-control" type="submit" onclick="SaveComment()"><i class="glyphicon glyphicon-registration-mark"></i> Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+<script>
+
+    var AddEditPost = function (postId) {
+
+        var url = "/Post/AddEditPost?postId=" + postId;
+
+        $("#myModalBodyDiv1").load(url, function () {
+            $("#myModal1").modal("show");
+
+        })
+
+    }
+
+
+    function SaveForm() {
+
+
+        var Body = $("#body").val();
+
+        if (Body == "") {
+
+            return false;
+        }
+        var data = $("#post").serialize();
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/Post/Create",
+            success: function (result) {
+
+
+                // $("#post")[0].reset();
+
+                window.location.reload(true);
+
+            }
+        });
+    }
+    function NewComment() {
+        var postid = event.target.getAttribute('data-arg1');
+
+        var button = document.getElementById('omaragamy');
+        button.innerHTML = postid;
+
+        $("#ShowComment").modal();
+
+    }
+    function SaveComment() {
+        var button1 = document.getElementById('omaragamy');
+        //alert(button1.innerHTML);
+        var Content = $("#content").val();
+        if (Content == "") {
+
+            return false;
+        }
+        var data = $("#comment").serialize();
+        $.ajax({
+            type: "GET",
+            url: "/Comment/AddComment/" + button1.innerHTML + "?str=" + data,
+            success: function (result) {
+
+
+                // $("#comment")[0].reset();
+
+                window.location.reload(true);
+
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#deletePosts .js-delete").click(function () {
+            var button = $(this);
+            bootbox.confirm("Are You Sure To Delete", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "/Post/Delete/" + button.attr("data-customer-id"),
+                        method: "POST",
+                        success: function () {
+
+                            $("#deletePosts").remove();
+                            window.location.reload(true);
+
+                        }
+                    });
+
+                }
+            });
+        });
+    });
+    $("#BtnLike").click(function () {
+
+        var button = $(this);
+
+        $.ajax({
+            url: "/Post/like/" + button.attr("data-like-id"),
+            data: data,
+            cache: false,
+            type: "POST",
+            success: function (result) {
+                window.location.reload(true);
+            },
+            error: function (result) {
+                alert("failed");
+            }
+        });
+    });
+
+
+</script>

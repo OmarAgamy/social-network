@@ -1,0 +1,248 @@
+﻿@model Social_Media.ViewModel.SearchableModel
+
+@{
+    ViewBag.Title = "Visit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@RenderPage("~/Views/Shared/_header.cshtml")
+
+
+<section class="cover-sec" style="position:relative">
+    @if (Model.ResultUser.Cover == null)
+    {
+        <img src="http://via.placeholder.com/1600x400" alt="">
+    }
+    else
+    {
+        <img src="~/UploadedFiles/@Html.DisplayFor(model=>model.ResultUser.Cover)" alt="" style="width:1350px;height:400px">
+    }
+    @{
+        if (Model.ResultUser.UserID != ViewBag.Login)
+        {
+            int buttonid = 0;
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <ul style="position:absolute; right:-1060px;z-index:1;margin-top:-60px">
+                    @if (Model.RelationState != 3)
+                    {
+                        if (Model.RelationState == 1)
+                        {
+                            <li><a onclick="myFunction()" href="#" title="" class="btn-danger" id=@buttonid data-arg1=@buttonid data-arg2=@Model.ResultUser.UserID style="padding:5px">Cancel</a></li>
+
+                        }
+                        else
+                        {
+                            if (Model.RelationState == 4)
+                            {
+                                <li style="align-content:center; display:inline-block ; "><a onclick="myFunction()" href="#" title="" class="btn-success" id=@buttonid data-arg1=@buttonid data-arg2=@Model.ResultUser.UserID style="display:none;padding:5px">Add Friend</a></li>
+                                ++buttonid;
+                                <li style="align-content:center; display:inline-block;"><a onclick="acceptordeny()" href="#" title="" class="btn-success" id=@buttonid data-arg1="accept" data-arg2=@Model.ResultUser.UserID data-arg3=@buttonid style="padding:5px">Accept</a></li>
+                                ++buttonid;
+                                <li style="align-content:center; display:inline-block"><a onclick="acceptordeny()" href="#" title="" class="btn-danger" id=@buttonid data-arg1="deny" data-arg2=@Model.ResultUser.UserID data-arg3=@buttonid style="background-color: red;padding:5px">Deny</a></li>
+
+                            }
+                            else
+                            {
+                                <li><a onclick="myFunction()" href="#" title="" class="btn-success" id=@buttonid data-arg1=@buttonid data-arg2=@Model.ResultUser.UserID style="padding:5px">Add Friend</a></li>
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        <li style="margin-bottom:20px"><i class="fa fa-check-circle fa-2x" style="color:cornflowerblue;"></i></li>
+
+                    }
+
+
+                </ul>
+
+
+            </div>
+            buttonid++;
+        }
+    }
+</section>
+<main>
+    <div class="main-section">
+        <div class="container">
+            <div class="main-section-data">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="main-left-sidebar">
+                            <div class="user_profile">
+
+                                <div class="user-pro-img">
+                                    @if (Model.ResultUser.Pic == null)
+                                    {
+                                        <img src="http://via.placeholder.com/170x170" alt="">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/UploadedFiles/@Html.DisplayFor(model=>model.ResultUser.Pic)" alt="" style="width:170px;height:170px">
+                                    }
+
+                                </div><!--user-pro-img end-->
+
+                                <div class="user_pro_status">
+                                    <ul class="flw-status">
+                                        <li>
+                                            <span>Following</span>
+                                            <b>34</b>
+                                        </li>
+                                        <li>
+                                            <span>Followers</span>
+                                            <b>155</b>
+                                        </li>
+                                    </ul>
+                                </div><!--user_pro_status end-->
+                            </div><!--user_profile end-->
+                        </div><!--main-left-sidebar end-->
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="main-ws-sec">
+                            <div class="user-tab-sec">
+                                <h3>@Model.ResultUser.Username</h3>
+                                <h4>@Model.ResultUser.Bio</h4>
+                                <div class="tab-feed st2">
+                                    <ul>
+                                        <li data-tab="feed-dd" class="active">
+                                            <a href="#" title="">
+                                                <img src="~/Content/images/ic1.png" alt="">
+                                                <span>Posts</span>
+                                            </a>
+                                        </li>
+                                        <li data-tab="info-dd">
+                                            <a href="#" title="">
+                                                <img src="~/Content/images/ic2.png" alt="">
+                                                <span>Details</span>
+                                            </a>
+                                        </li>
+
+
+                                    </ul>
+                                </div><!-- tab-feed end-->
+                            </div><!--user-tab-sec end-->
+                            <div class="product-feed-tab current" id="feed-dd">
+                                <div class="posts-section">
+                                    <div class="post-bar">
+                                        <div class="post_topbar">
+                                            @{
+                                                Html.RenderPartial("~/Views/Shared/Index.cshtml", Model.FriendPosts);
+                                            }
+                                        </div><!--post-bar end-->
+                                        <div class="process-comm">
+                                            <div class="spinner">
+                                                <div class="bounce1"></div>
+                                                <div class="bounce2"></div>
+                                                <div class="bounce3"></div>
+                                            </div>
+                                        </div><!--process-comm end-->
+                                    </div><!--posts-section end-->
+                                </div><!--product-feed-tab end-->
+                                <div class="product-feed-tab" id="info-dd">
+                                    <div class="user-profile-ov">
+                                        <h3>Education<i class="fa fa-graduation-cap"></i></h3>
+                                        <p>@Model.ResultUser.Education</p>
+                                    </div><!--user-profile-ov end-->
+                                    <div class="user-profile-ov st2">
+                                        <h3>Location<i class="fa fa-map-marker" aria-hidden="true"></i></h3>
+                                        <p>@Model.ResultUser.Location</p>
+                                    </div><!--user-profile-ov end-->
+                                    <div class="user-profile-ov">
+                                        <h3>Birthdate<i class="fa fa-birthday-cake" aria-hidden="true"></i></h3>
+                                        <p>@Model.ResultUser.Birthdate.ToShortDateString()</p>
+                                    </div><!--user-profile-ov end-->
+                                </div><!--product-feed-tab end-->
+
+
+                            </div><!--product-feed-tab end-->
+                        </div><!--main-ws-sec end-->
+                    </div>
+                </div>
+            </div><!-- main-section-data end-->
+        </div>
+</main>
+<script>
+    function myFunction() {
+        var x = document.getElementById(event.target.getAttribute('data-arg1'));
+        var Userid = event.target.getAttribute('data-arg2');
+        if (x.innerHTML === "Add Friend") {
+            x.innerHTML = "Cancel";
+            x.style.backgroundColor = "red";
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/AddFriend" + '?friendID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                        x.innerHTML = "Add Friend"
+                        x.style.backgroundColor = "#53d690";
+                    },
+                });
+            } catch (err) { }
+        } else {
+            if (x.innerHTML === "Cancel") {
+                x.innerHTML = "Add Friend"
+                x.style.backgroundColor = "#53d690";
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                            x.innerHTML = "Cancel";
+                            x.style.backgroundColor = "red";
+                        },
+                    });
+                } catch (err) { }
+            }
+        }
+
+    }
+    function acceptordeny() {
+        var whichone = event.target.getAttribute('data-arg1');
+        var Userid = event.target.getAttribute('data-arg2');
+        var ele = document.getElementById(event.target.getAttribute('data-arg3'));
+        if (whichone == "accept") {
+            var buttonid = event.target.getAttribute('data-arg3');
+            var accept = document.getElementById(buttonid);
+            var deny = document.getElementById(++buttonid);
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/AcceptFriendRequest" + '?friendID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                    },
+                    success: function () {
+                        accept.style.display = "none";
+                        deny.style.display = "none";
+                        $(ele).parent().append('<li style="margin-bottom:20px"><i class="fa fa-check-circle fa-2x" style="color:cornflowerblue;"></i></li>');
+                    }
+                });
+            } catch (err) { }
+        }
+        else {
+            var buttonid = event.target.getAttribute('data-arg3');
+            var addfriendbutton = document.getElementById(buttonid - 2);
+            var accept = document.getElementById(buttonid - 1);
+            var deny = document.getElementById(buttonid);
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                    error: function () {
+                        alert("Something Went Wrong !! ");
+                    },
+                    success: function () {
+                        accept.style.display = "none";
+                        deny.style.display = "none";
+
+                    }
+                });
+            } catch (err) { }
+            addfriendbutton.style.display = "block";
+            addfriendbutton.style.marginLeft = "20px";
+        }
+    }</script>

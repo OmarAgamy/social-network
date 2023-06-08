@@ -1,0 +1,66 @@
+﻿@model Social_Media.Models.Post
+
+
+
+<div>
+
+    <form id="myForm">
+        @Html.HiddenFor(m => m.ID)
+
+       
+
+        @Html.TextBoxFor(model => model.Body, new { @class = "form-control", @placeholder = "Your Post" })
+
+        <a href="#" id="btnSubmit" class="btn btn-success btn-block">@if (Model.ID > 0)
+        {<span>Update</span> }
+        else
+        {<span>Save</span>} </a>
+
+    </form>
+
+    
+
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+
+            
+
+            var myformdata = $("#myForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Post/SaveData",
+                data: myformdata,
+                success: function () {
+                   
+                    $("#myModal1").modal("hide");
+                    window.location.reload(true);
+
+                }
+
+            })
+        })
+
+    })
+
+    $(document).ready(function() {
+  $(window).keydown(function(event){
+    if(event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
+});
+
+  
+
+
+</script>
+

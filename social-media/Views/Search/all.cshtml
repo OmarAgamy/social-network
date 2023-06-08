@@ -1,0 +1,198 @@
+﻿@using Social_Media.Models
+@using Social_Media.ViewModel
+@model IEnumerable<Social_Media.ViewModel.SearchableModel>
+@{
+    ViewBag.Title = "all";
+}
+@RenderPage("~/Views/Shared/_header.cshtml")
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WorkWise Html Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.range.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/responsive.css">
+</head>
+
+
+<body>
+
+
+    <div class="wrapper">
+
+        <main>
+            <div class="main-section">
+                <div class="container">
+                    <div class="main-section-data">
+                        <div class="row">
+
+                            @{int buttonid = 0;}
+                            @foreach (var item in Model)
+                            {
+                                if (item.ResultUser.UserID != ViewBag.Login)
+                                {
+                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                        <div class="company_profile_info">
+                                            <div class="company-up-info" style="border-left: 3px solid #4d4dff;">
+                                                <img src="http://via.placeholder.com/90x90" alt="">
+                                                <h3>@item.ResultUser.Username</h3>
+                                                <h4>@item.ResultUser.UserID</h4>
+                                                <ul style="height:40px;width:250px;">
+                                                    @if (item.RelationState != 3 && item.ResultUser.UserID != ViewBag.Login)
+                                                    {
+                                                        if (item.RelationState == 1)
+                                                        {
+                                                            <li><a onclick="myFunction()" href="#" title="" class="follow" id=@buttonid data-arg1=@buttonid data-arg2=@item.ResultUser.UserID style="background-color: red">Cancel</a></li>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.RelationState == 4)
+                                                            {
+                                                                <li style="align-content:center; display:inline-block ; "><a onclick="myFunction()" href="#" title="" class="follow" id=@buttonid data-arg1=@buttonid data-arg2=@item.ResultUser.UserID style="display:none">Add Friend</a></li>
+                                                                ++buttonid;
+                                                                <li style="align-content:center; display:inline-block;"><a onclick="acceptordeny()" href="#" title="" class="follow" id=@buttonid data-arg1="accept" data-arg2=@item.ResultUser.UserID data-arg3=@buttonid>Accept</a></li>
+                                                                ++buttonid;
+                                                                <li style="align-content:center; display:inline-block"><a onclick="acceptordeny()" href="#" title="" class="follow" id=@buttonid data-arg1="deny" data-arg2=@item.ResultUser.UserID data-arg3=@buttonid style="background-color: red">Deny</a></li>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <li><a onclick="myFunction()" href="#" title="" class="follow" id=@buttonid data-arg1=@buttonid data-arg2=@item.ResultUser.UserID>Add Friend</a></li>
+                                                            }
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <li style="margin-bottom:20px"><i class="fa fa-check-circle fa-2x" style="color:cornflowerblue;"></i></li>
+
+                                                    }
+
+
+                                                </ul>
+
+                                            </div>
+
+                                            <a href="~/Profile/Visit?id=@item.ResultUser.UserID" title="" class="view-more-pro">View Profile</a>
+                                        </div><!--company_profile_info end-->
+                                    </div>
+                                    buttonid++;
+                                }
+                                buttonid++;
+                            }
+                            @{ if (buttonid == 0)
+                                {
+                                    <h1 style="color:darkgray; margin-top:20%; margin-left:35%; font-size:72px"> Not Found </h1>
+                                }
+                            }
+                        </div>
+                    </div><!-- main-section-data end-->
+                </div>
+            </div>
+        </main>
+
+    </div>
+    <script>
+        function myFunction() {
+            var x = document.getElementById(event.target.getAttribute('data-arg1'));
+            var Userid = event.target.getAttribute('data-arg2');
+            if (x.innerHTML === "Add Friend") {
+                x.innerHTML = "Cancel";
+                x.style.backgroundColor = "red";
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Search/AddFriend" + '?friendID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                            x.innerHTML = "Add Friend"
+                            x.style.backgroundColor = "#53d690";
+                        },
+                    });
+                } catch (err) { }
+            } else {
+                if (x.innerHTML === "Cancel") {
+                    x.innerHTML = "Add Friend"
+                    x.style.backgroundColor = "#53d690";
+                    try {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                            error: function () {
+                                alert("Something Went Wrong !! ");
+                                x.innerHTML = "Cancel";
+                                x.style.backgroundColor = "red";
+                            },
+                        });
+                    } catch (err) { }
+                }
+            }
+
+        }
+        function acceptordeny() {
+            var whichone = event.target.getAttribute('data-arg1');
+            var Userid = event.target.getAttribute('data-arg2');
+            var ele = document.getElementById(event.target.getAttribute('data-arg3'));
+            if (whichone == "accept") {
+                var buttonid = event.target.getAttribute('data-arg3');
+                var accept = document.getElementById(buttonid);
+                var deny = document.getElementById(++buttonid);
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Search/AcceptFriendRequest" + '?friendID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                        },
+                        success: function () {
+                            accept.style.display = "none";
+                            deny.style.display = "none";
+                            $(ele).parent().append('<li style="margin-bottom:20px"><i class="fa fa-check-circle fa-2x" style="color:cornflowerblue;"></i></li>');
+                        }
+                    });
+                } catch (err) { }
+            }
+            else {
+                var buttonid = event.target.getAttribute('data-arg3');
+                var addfriendbutton = document.getElementById(buttonid - 2);
+                var accept = document.getElementById(buttonid - 1);
+                var deny = document.getElementById(buttonid);
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Search/CancelRequest" + '?friendID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                        },
+                        success: function () {
+                            accept.style.display = "none";
+                            deny.style.display = "none";
+
+                        }
+                    });
+                } catch (err) { }
+                addfriendbutton.style.display = "block";
+                addfriendbutton.style.marginLeft = "25px";
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

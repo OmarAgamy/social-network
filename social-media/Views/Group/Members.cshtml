@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Social_Media.Models.User>
+@using Social_Media.Controllers;
+@using Social_Media.Models;
+@using System.Linq;
+@{
+    ViewBag.Title = "Members";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ID = @Url.RequestContext.RouteData.Values["id"];
+}
+
+
+@RenderPage("~/Views/Shared/_header.cshtml")
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CreateGroup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="~/Content/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/responsive.css">
+</head>
+
+
+<body>
+
+
+
+
+
+    @{int buttonid = 0;}
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="company_profile_info">
+                <div class="company-up-info" style="border-left: 3px solid #4d4dff;">
+                    <img src="http://via.placeholder.com/90x90" alt="">
+                    <h3>@item.Username</h3>
+                    <ul>
+
+                        <li><a onclick="Add()" href="#" title="" class="follow" id=@buttonid data-arg1=@buttonid data-arg2=@item.UserID data-arg3=@ID style="background-color: red">Remove from group</a></li>
+
+                    </ul>
+
+                </div>
+                <a href="~/Profile/Visit?id=@item.UserID" title="" class="view-more-pro">View Profile</a>
+            </div><!--company_profile_info end-->
+        </div>
+        buttonid++;
+    }
+    <script>
+        function Add() {
+            var x = document.getElementById(event.target.getAttribute('data-arg1'));
+            var Userid = event.target.getAttribute('data-arg2');
+            var groupid = event.target.getAttribute('data-arg3');
+            if (x.innerHTML === "Add to group") {
+                x.innerHTML = "Remove from group";
+                x.style.backgroundColor = "red";
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Group/AddMember/" + groupid + '?groupid=' + groupid + '&MemberID=' + Userid,
+                        error: function () {
+                            alert("Something Went Wrong !! ");
+                            x.innerHTML = "Add to group"
+                            x.style.backgroundColor = "#53d690";
+                        },
+                    });
+                } catch (err) { }
+            } else {
+                if (x.innerHTML === "Remove from group") {
+                    x.innerHTML = "Add to group"
+                    x.style.backgroundColor = "#53d690";
+                    try {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Group/RemoveMember/" + groupid + '?groupid=' + groupid + '&MemberID=' + Userid,
+                            error: function () {
+                                alert("Something Went Wrong !! ");
+                                x.innerHTML = "Remove from group";
+                                x.style.backgroundColor = "red";
+                            },
+                        });
+                    } catch (err) { }
+                }
+            }
+
+        }
+
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/popper.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/slick/slick.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/script.js"></script>
+</body>
+</html>
